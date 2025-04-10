@@ -1,0 +1,13 @@
+@media print {       
+    @page{margin:0px;padding:0px}
+    .topbar, .navbar, .top-navbar, .navbar-expand-md, .left-sidebar, .navbar-header, .navbar-collapse, .print_card, .footer, .cake-sql-log, .page-titles{display: none}
+    .container-fluid{background-color:transparent !important}
+    .is_stuck, .page-wrapper,.card-body{margin:0px !important;padding:0px !important;background-color:transparent !important}
+    .card-title{background-color: #8a8a8a;color: #ffffff;padding: 10px;text-align: center;float: none}
+    tspan{background-color: #8a8a8a;color: #ffffff;}
+    .hide{display: table;}
+    .bg-success {padding: 8px !important;}
+    body {-webkit-print-color-adjust: exact;}
+    #attn_list{color: #000; font-weight: 400;}
+    #attn_list td{padding: 2px !important;font-size: 14px !important;}
+}
