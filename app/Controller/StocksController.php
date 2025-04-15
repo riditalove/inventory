@@ -6,33 +6,61 @@ App::uses('AppController', 'Controller');
  * @property Stock $Stock
  * @property PaginatorComponent $Paginator
  */
-class StocksController extends AppController {
+class StocksController extends AppController
+{
 
-/**
- * Components
- *
- * @var array
- */
+	/**
+	 * Components
+	 *
+	 * @var array
+	 */
 	public $components = array('Paginator');
 
-/**
- * index method
- *
- * @return void
- */
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
 	public function index() {
-		$this->Stock->recursive = 0;
-		$this->set('stocks', $this->Paginator->paginate());
+		$this->loadModel('Material');
+	
+		$materials = $this->Material->find('list', [
+			'fields' => ['Material.id', 'Material.name']
+		]);
+	
+		$conditions = [];
+	
+		if (!empty($this->request->query['material_id'])) {
+			$conditions['Stock.material_id'] = $this->request->query['material_id'];
+		}
+	
+		$stocks = $this->Stock->find('all', [
+			'conditions' => $conditions,
+			'contain' => ['Material']
+		]);
+	
+		$this->set(compact('materials', 'stocks'));
 	}
+	
+	// public function index()
+	// {
+	// 	$this->Stock->recursive = 0;
+	// 	$this->set('stocks', $this->Paginator->paginate());
+	// 	$this->loadModel('Material');
+	// 	$materials = $this->Material->find('list', ['fields' => ['Material.id', 'Material.name']]);
+	// 	$this->set(compact('materials'));
 
-/**
- * view method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function view($id = null) {
+	// }
+
+	/**
+	 * view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function view($id = null)
+	{
 		if (!$this->Stock->exists($id)) {
 			throw new NotFoundException(__('Invalid stock'));
 		}
@@ -40,12 +68,13 @@ class StocksController extends AppController {
 		$this->set('stock', $this->Stock->find('first', $options));
 	}
 
-/**
- * add method
- *
- * @return void
- */
-	public function add() {
+	/**
+	 * add method
+	 *
+	 * @return void
+	 */
+	public function add()
+	{
 		if ($this->request->is('post')) {
 			$this->Stock->create();
 			if ($this->Stock->save($this->request->data)) {
@@ -59,14 +88,15 @@ class StocksController extends AppController {
 		$this->set(compact('materials'));
 	}
 
-/**
- * edit method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function edit($id = null) {
+	/**
+	 * edit method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function edit($id = null)
+	{
 		if (!$this->Stock->exists($id)) {
 			throw new NotFoundException(__('Invalid stock'));
 		}
@@ -85,14 +115,15 @@ class StocksController extends AppController {
 		$this->set(compact('materials'));
 	}
 
-/**
- * delete method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function delete($id = null) {
+	/**
+	 * delete method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function delete($id = null)
+	{
 		if (!$this->Stock->exists($id)) {
 			throw new NotFoundException(__('Invalid stock'));
 		}
@@ -106,5 +137,5 @@ class StocksController extends AppController {
 	}
 
 
-	
+
 }

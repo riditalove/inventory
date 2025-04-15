@@ -69,6 +69,13 @@ class Stockin extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'Supplier' => array(
+			'className' => 'Supplier',
+			'foreignKey' => 'supplier_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
 }

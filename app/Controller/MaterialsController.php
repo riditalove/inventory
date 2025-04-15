@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import('Vendor', 'phpqrcode', array('file' => 'phpqrcode/qrlib.php'));
 /**
  * Materials Controller
  *
@@ -45,17 +46,110 @@ class MaterialsController extends AppController {
  *
  * @return void
  */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->Material->create();
-			if ($this->Material->save($this->request->data)) {
-				$this->Flash->success(__('The material has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Flash->error(__('The material could not be saved. Please, try again.'));
-			}
-		}
-	}
+
+ public function add() {
+    if ($this->request->is('post')) {
+        $this->Material->create();
+
+        if ($this->Material->save($this->request->data)) {
+            $materialId = $this->Material->id;
+            $materialName = $this->request->data['Material']['name'];
+
+            // Avoid redefining constants
+            if (!defined('QR_MODE_NUL')) {
+                App::import('Vendor', 'phpqrcode/phpqrcode');
+            }
+
+            // Create directory if not exists
+            $qrDir = WWW_ROOT . 'img' . DS . 'qrcodes' . DS;
+            if (!file_exists($qrDir)) {
+                mkdir($qrDir, 0775, true);
+            }
+
+            // URL accessible from phone
+            $url = 'http://192.168.4.197/inventoryprint/stockouts/viewByMaterial/' . $materialId;
+            $qrFileName = 'material_' . $materialName . '.png';
+            $qrPath = $qrDir . $qrFileName;
+
+            QRcode::png($url, $qrPath, 'L', 4, 2);
+
+            $this->Session->setFlash(__('The material has been saved and QR code generated.'));
+            return $this->redirect(['action' => 'index']);
+        } else {
+            $this->Session->setFlash(__('The material could not be saved. Please, try again.'));
+        }
+    }
+}
+
+
+//  public function add() {
+//     if ($this->request->is('post')) {
+//         $this->Material->create();
+
+//         if ($this->Material->save($this->request->data)) {
+//             $materialId = $this->Material->id;
+//             $materialName = $this->request->data['Material']['name'];
+
+//             // Import QR library
+//             App::import('Vendor', 'phpqrcode/phpqrcode');
+
+//             // Create QR image directory if it doesn't exist
+//             $qrDir = WWW_ROOT . 'img' . DS . 'qrcodes' . DS;
+//             if (!file_exists($qrDir)) {
+//                 mkdir($qrDir, 0775, true);
+//             }
+
+//             // URL that will be encoded in QR — accessible from your phone
+//             $url = 'http://192.168.3.220/inventoryprint/stockouts/viewByMaterial/' . $materialId;
+
+//             // File path where the QR code image will be saved
+//             $qrFileName = 'material_' . $materialName . '.png';
+//             $qrPath = $qrDir . $qrFileName;
+
+//             // Generate QR code image
+//             QRcode::png($url, $qrPath, 'L', 4, 2);
+
+//             $this->Session->setFlash(__('The material has been saved and QR code generated.'));
+//             return $this->redirect(['action' => 'index']);
+//         } else {
+//             $this->Session->setFlash(__('The material could not be saved. Please, try again.'));
+//         }
+//     }
+// }
+
+
+// public function add() {
+//     if ($this->request->is('post')) {
+//         $this->Material->create();
+
+//         if ($this->Material->save($this->request->data)) {
+//             $materialId = $this->Material->id;
+// 			$materialName = $this->request->data['Material']['name'];
+
+//             // Generate QR Code
+//             $url = Router::url(['controller' => 'stockouts', 'action' => 'viewByMaterial', $materialId], true);
+//             $qrPath = '192.168.3.220' . 'img' . DS . 'qrcodes' . DS . 'material_' . $materialName . '.png';
+//             QRcode::png($url, $qrPath, 'L', 4, 2);
+
+//             $this->Session->setFlash(__('The material has been saved and QR code generated.'));
+//             return $this->redirect(['action' => 'index']);
+//         } else {
+//             $this->Session->setFlash(__('The material could not be saved. Please, try again.'));
+//         }
+//     }
+// }
+
+	// public function add() {
+	// 	if ($this->request->is('post')) {
+	// 		$this->Material->create();
+	// 		if ($this->Material->save($this->request->data)) {
+	// 			$this->Flash->success(__('The material has been saved.'));
+	// 			return $this->redirect(array('action' => 'index'));
+	// 		} else {
+	// 			$this->Flash->error(__('The material could not be saved. Please, try again.'));
+	// 		}
+	// 	}
+	// }
 
 	// Inside your Material add function
 // public function add() {

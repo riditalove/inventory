@@ -47,7 +47,17 @@
 						]);
 
 						echo $this->Form->input('quantity');
-						echo $this->Form->input('size');
+						if (!empty($this->request->data['Supplier']['name'])) {
+							echo $this->Form->label('supplier_id', 'Supplier Name');
+							echo $this->Form->text('supplier_name', [
+								'value' => $this->request->data['Supplier']['name'],
+								'readonly' => true,
+								'class' => 'form-control'
+							]);
+							echo $this->Form->hidden('supplier_id');
+						} else {
+							echo $this->Form->input('supplier_id'); // fallback
+						}
 						?>
 
 

@@ -36,40 +36,31 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 				<div class="card-body">
 					<div class="panel panel-info">
 						<div class="panel-body">
-							<?php echo $this->Form->create('Src', array('class' => 'form-horizontal')); ?>
+							<!-- Search Form -->
+							<?php echo $this->Form->create('Stock', ['type' => 'get', 'class' => 'form-inline']); ?>
 							<table class="table table-condensed table-bordered table-hover contact-list no-wrap">
 								<tr>
-									<?php
-									if (!empty($this->request->data['Src']['df'])) {
-										$df = $this->request->data['Src']['df'];
-									} else {
-										$df = '';
-									}
-									if (!empty($this->request->data['Src']['dt'])) {
-										$dt = $this->request->data['Src']['dt'];
-									} else {
-										$dt = '';
-									}
-									?>
-									<th><?php echo __('Company'); ?></th>
-									<td><?php echo $this->Form->input('company_id', array('label' => false, 'empty' => 'Please Select')); ?>
+									<th><?php echo __('Stock Name'); ?></th>
+									<td>
+										<?php
+										echo $this->Form->input('material_id', [
+											'label' => false,
+											'empty' => 'Please Select',
+											'options' => $materials,
+											'class' => 'form-control'
+										]);
+										?>
 									</td>
-									<td><?php echo $this->Form->input('df', array('readonly' => 'readonly', 'label' => 'Date From', 'value' => $df)); ?>
-									</td>
-									<td><?php echo $this->Form->input('dt', array('readonly' => 'readonly', 'label' => 'Date To', 'value' => $dt)); ?>
-									</td>
-									<td><?php echo $this->Form->button('Search', array('class' => 'btn btn-info', 'name' => 'btnsrc')); ?>
+									<td>
+										<?php echo $this->Form->button('Search', ['class' => 'btn btn-info', 'name' => 'btnsrc']); ?>
 									</td>
 								</tr>
 							</table>
+							<?php echo $this->Form->end(); ?>
 
-							<p class="paginginfo float-left">
-								<?php
-								echo $this->Paginator->counter(array(
-									'format' => __('Showing {:start} to {:end} of {:count} records')
-								));
-								?>
-							</p>
+
+
+							
 							<ul class="pagination float-right">
 								<?php
 								echo $this->Paginator->first();
@@ -120,10 +111,10 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 										</td>
 										<td><?php echo h($stock['Stock']['quantity']); ?>&nbsp;</td>
 										<td class="actions">
-                                            <?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stock['Stock']['id']), array('escape' => false)); ?>
-                                            <?php echo $this->Html->link(__('<i class="icon-pencil7 text-success" title="Edit"></i>'), array('action' => 'edit', $stock['Stock']['id']), array('escape' => false)); ?>
-                                            <?php echo $this->Form->postLink(__('<i class="icon-trash text-danger" title="Delete"></i>'), array('action' => 'delete', $stock['Stock']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $stock['Stock']['id']), 'escape' => false)); ?>
-                                        </td>
+											<?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stock['Stock']['id']), array('escape' => false)); ?>
+											<?php echo $this->Html->link(__('<i class="icon-pencil7 text-success" title="Edit"></i>'), array('action' => 'edit', $stock['Stock']['id']), array('escape' => false)); ?>
+											<?php echo $this->Form->postLink(__('<i class="icon-trash text-danger" title="Delete"></i>'), array('action' => 'delete', $stock['Stock']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $stock['Stock']['id']), 'escape' => false)); ?>
+										</td>
 									</tr>
 								<?php endforeach; ?>
 							</tbody>

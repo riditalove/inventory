@@ -39,32 +39,27 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 				<div class="card-body">
 					<div class="panel panel-info">
 						<div class="panel-body">
-							<?php echo $this->Form->create('Src', array('class' => 'form-horizontal')); ?>
+							<!-- Search Form -->
+							<?php echo $this->Form->create('Stock', ['type' => 'get', 'class' => 'form-inline']); ?>
 							<table class="table table-condensed table-bordered table-hover contact-list no-wrap">
 								<tr>
-									<?php
-									if (!empty($this->request->data['Src']['df'])) {
-										$df = $this->request->data['Src']['df'];
-									} else {
-										$df = '';
-									}
-									if (!empty($this->request->data['Src']['dt'])) {
-										$dt = $this->request->data['Src']['dt'];
-									} else {
-										$dt = '';
-									}
-									?>
-									<th><?php echo __('Company'); ?></th>
-									<td><?php echo $this->Form->input('company_id', array('label' => false, 'empty' => 'Please Select')); ?>
+									<th><?php echo __('Stock Name'); ?></th>
+									<td>
+										<?php
+										echo $this->Form->input('material_id', [
+											'label' => false,
+											'empty' => 'Please Select',
+											'options' => $materials,
+											'class' => 'form-control'
+										]);
+										?>
 									</td>
-									<td><?php echo $this->Form->input('df', array('readonly' => 'readonly', 'label' => 'Date From', 'value' => $df)); ?>
-									</td>
-									<td><?php echo $this->Form->input('dt', array('readonly' => 'readonly', 'label' => 'Date To', 'value' => $dt)); ?>
-									</td>
-									<td><?php echo $this->Form->button('Search', array('class' => 'btn btn-info', 'name' => 'btnsrc')); ?>
+									<td>
+										<?php echo $this->Form->button('Search', ['class' => 'btn btn-info', 'name' => 'btnsrc']); ?>
 									</td>
 								</tr>
 							</table>
+							<?php echo $this->Form->end(); ?>
 
 							<p class="paginginfo float-left">
 								<?php
@@ -110,7 +105,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 									<th><?php echo $this->Paginator->sort('material_id'); ?></th>
 									<th><?php echo $this->Paginator->sort('date'); ?></th>
 									<th><?php echo $this->Paginator->sort('quantity'); ?></th>
-									<th><?php echo $this->Paginator->sort('size'); ?></th>
+									<th><?php echo $this->Paginator->sort('supplier_id'); ?></th>
 									<th class="actions"><?php echo __('Actions'); ?></th>
 								</tr>
 
@@ -125,13 +120,20 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 										</td>
 										<td><?php echo h($stockin['Stockin']['date']); ?>&nbsp;</td>
 										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
-										<td><?php echo h($stockin['Stockin']['size']); ?>&nbsp;</td>
-					
+										<td>
+											<?php
+											echo !empty($stockin['Stockin']['supplier_id']) && isset($suppliers[$stockin['Stockin']['supplier_id']])
+												? h($suppliers[$stockin['Stockin']['supplier_id']])
+												: 'NULL';
+											?>
+										</td>
+
+
 										<td class="actions">
-                                            <?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stockin['Stockin']['id']), array('escape' => false)); ?>
-                                            <?php echo $this->Html->link(__('<i class="icon-pencil7 text-success" title="Edit"></i>'), array('action' => 'edit', $stockin['Stockin']['id']), array('escape' => false)); ?>
-                                            <?php echo $this->Form->postLink(__('<i class="icon-trash text-danger" title="Delete"></i>'), array('action' => 'delete', $stockin['Stockin']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $stockin['Stockin']['id']), 'escape' => false)); ?>
-                                        </td>
+											<?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stockin['Stockin']['id']), array('escape' => false)); ?>
+											<?php echo $this->Html->link(__('<i class="icon-pencil7 text-success" title="Edit"></i>'), array('action' => 'edit', $stockin['Stockin']['id']), array('escape' => false)); ?>
+											<?php echo $this->Form->postLink(__('<i class="icon-trash text-danger" title="Delete"></i>'), array('action' => 'delete', $stockin['Stockin']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $stockin['Stockin']['id']), 'escape' => false)); ?>
+										</td>
 									</tr>
 								<?php endforeach; ?>
 							</tbody>
