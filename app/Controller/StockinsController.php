@@ -23,11 +23,55 @@ class StockinsController extends AppController
 	 *
 	 * @return void
 	 */
+	// public function index()
+	// {
+	// 	$this->loadModel('Material');
+
+	// 	$materials = $this->Material->find('list', [
+	// 		'fields' => ['Material.id', 'Material.name']
+	// 	]);
+
+	// 	$conditions = [];
+
+	// 	if (!empty($this->request->query['material_id'])) {
+	// 		$conditions['Stock.material_id'] = $this->request->query['material_id'];
+	// 	}
+
+	// 	$stockin = $this->Stockin->find('all', [
+	// 		'conditions' => $conditions,
+	// 		'contain' => ['Stockin']
+	// 	]);
+
+	// 	$this->Stockin->recursive = 0;
+	// 	$this->set('stockins', $this->Paginator->paginate());
+	// 	$this->set(compact('materials'));
+	// }
+
 	public function index()
 	{
+		$this->loadModel('Material');
+
+		$materials = $this->Material->find('list', [
+			'fields' => ['Material.id', 'Material.name']
+		]);
+
+		$conditions = [];
+
+		if (!empty($this->request->query['material_id'])) {
+			$conditions['Stockin.material_id'] = $this->request->query['material_id'];
+		}
+
 		$this->Stockin->recursive = 0;
-		$this->set('stockins', $this->Paginator->paginate());
+
+		$this->paginate = [
+			'conditions' => $conditions,
+			'contain' => ['Material']
+		];
+
+		$stockins = $this->Paginator->paginate('Stockin');
+		$this->set(compact('stockins', 'materials'));
 	}
+
 
 	/**
 	 * view method
@@ -122,7 +166,7 @@ class StockinsController extends AppController
 
 	// public function edit($id = null)
 	// {
-		
+
 	// 	if (!$this->Stockin->exists($id)) {
 	// 		throw new NotFoundException(__('Invalid stockin'));
 	// 	}
@@ -141,21 +185,22 @@ class StockinsController extends AppController
 	// 	$this->set(compact('materials'));
 	// }
 
-	public function edit($id = null) {
+	public function edit($id = null)
+	{
 
 		if (!$id) {
 			throw new NotFoundException(__('Invalid stockin'));
 		}
-	
+
 		$stockin = $this->Stockin->findById($id);
 		if (!$stockin) {
 			throw new NotFoundException(__('Invalid stockin'));
 		}
-	
+
 		if ($this->request->is(array('post', 'put'))) {
 			$oldQuantity = $stockin['Stockin']['quantity'];
 			$materialId = $stockin['Stockin']['material_id'];
-	
+
 			// Subtract old quantity from stocks
 			$stock = $this->Stock->findByMaterialId($materialId);
 			if ($stock) {
@@ -163,11 +208,11 @@ class StockinsController extends AppController
 				$this->Stock->id = $stock['Stock']['id'];
 				$this->Stock->saveField('quantity', $newStockQty);
 			}
-	
+
 			// Save the new stockin data
 			$this->Stockin->id = $id;
 			if ($this->Stockin->save($this->request->data)) {
-	
+
 				// Add the new quantity to stocks
 				$newQty = $this->request->data['Stockin']['quantity'];
 				$stock = $this->Stock->findByMaterialId($materialId);
@@ -176,18 +221,18 @@ class StockinsController extends AppController
 					$this->Stock->id = $stock['Stock']['id'];
 					$this->Stock->saveField('quantity', $updatedQty);
 				}
-	
+
 				$this->Flash->success(__('The stockin has been updated.'));
 				return $this->redirect(array('action' => 'index'));
 			}
 			$this->Session->Flash->error(__('Unable to update stockin.'));
 		}
-	
+
 		if (!$this->request->data) {
 			$this->request->data = $stockin;
 		}
 	}
-	
+
 
 	/**
 	 * delete method
@@ -210,19 +255,20 @@ class StockinsController extends AppController
 	// 	return $this->redirect(array('action' => 'index'));
 	// }
 
-	public function delete($id = null) {
+	public function delete($id = null)
+	{
 		$this->loadModel('Stock');
 		$this->request->allowMethod('post', 'delete');
-	
+
 		$stockin = $this->Stockin->findById($id);
-	
+
 		if (!$stockin) {
 			throw new NotFoundException(__('Invalid stockin'));
 		}
-	
+
 		$materialId = $stockin['Stockin']['material_id'];
 		$quantityAdded = $stockin['Stockin']['quantity']; // use the correct field
-	
+
 		// Reduce the stock by the quantity that was added
 		$stock = $this->Stock->findByMaterialId($materialId);
 		if ($stock) {
@@ -230,14 +276,14 @@ class StockinsController extends AppController
 			$this->Stock->id = $stock['Stock']['id'];
 			$this->Stock->saveField('quantity', $newQty);
 		}
-	
+
 		if ($this->Stockin->delete($id)) {
 			$this->Flash->success(__('Stockin deleted and stock adjusted.'));
 		} else {
 			$this->Flash->error(__('Stockin could not be deleted.'));
 		}
-	
+
 		return $this->redirect(array('action' => 'index'));
 	}
-	
+
 }

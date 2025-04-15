@@ -2,9 +2,14 @@
 	"name": "cakephp/app",
 	"description": "CakePHP Application skeleton",
 	"type": "library",
-	"keywords": ["application", "cakephp"],
+	"keywords": [
+		"application",
+		"cakephp"
+	],
 	"homepage": "https://cakephp.org",
 	"license": "MIT",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"authors": [
 		{
 			"name": "CakePHP Community",
