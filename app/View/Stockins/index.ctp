@@ -105,7 +105,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 									<th><?php echo $this->Paginator->sort('material_id'); ?></th>
 									<th><?php echo $this->Paginator->sort('date'); ?></th>
 									<th><?php echo $this->Paginator->sort('quantity'); ?></th>
-									<th><?php echo $this->Paginator->sort('size'); ?></th>
+									<th><?php echo $this->Paginator->sort('supplier_id'); ?></th>
 									<th class="actions"><?php echo __('Actions'); ?></th>
 								</tr>
 
@@ -119,8 +119,15 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 											<?php echo $this->Html->link($stockin['Material']['name'], array('controller' => 'materials', 'action' => 'view', $stockin['Material']['id'])); ?>
 										</td>
 										<td><?php echo h($stockin['Stockin']['date']); ?>&nbsp;</td>
+                    <td>
+											<?php
+											echo !empty($stockin['Stockin']['supplier_id']) && isset($suppliers[$stockin['Stockin']['supplier_id']])
+												? h($suppliers[$stockin['Stockin']['supplier_id']])
+												: 'NULL';
+											?>
+										</td>
 										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
-										<td><?php echo h($stockin['Stockin']['size']); ?>&nbsp;</td>
+
 
 										<td class="actions">
 											<?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stockin['Stockin']['id']), array('escape' => false)); ?>

@@ -29,7 +29,14 @@
 						echo $this->Form->input('material_id');
 						echo $this->Form->input('date', array('type' => 'text', 'class' => 'datepicker', 'readonly' => true, 'value' => date('Y-m-d')));
 						echo $this->Form->input('quantity');
-						echo $this->Form->input('size');
+						echo $this->Form->input('supplier_id', [
+							'label' => 'Supplier',
+							'type' => 'select',
+							'options' => $suppliers,
+							'empty' => 'Select Supplier',
+							'class' => 'form-control'
+						]);
+						
 						?>
 					</div>
 

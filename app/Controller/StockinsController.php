@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import('Vendor', 'phpqrcode', array('file' => 'phpqrcode/qrlib.php'));
 /**
  * Stockins Controller
  *
@@ -50,6 +51,11 @@ class StockinsController extends AppController
 	public function index()
 	{
 		$this->loadModel('Material');
+    $this->loadModel('Supplier');
+    $suppliers = $this->Supplier->find('list', [
+			'fields' => ['Supplier.id', 'Supplier.name'],
+		]);
+
 
 		$materials = $this->Material->find('list', [
 			'fields' => ['Material.id', 'Material.name']
@@ -69,7 +75,10 @@ class StockinsController extends AppController
 		];
 
 		$stockins = $this->Paginator->paginate('Stockin');
-		$this->set(compact('stockins', 'materials'));
+
+		$this->set(compact('stockins', 'materials', 'suppliers'));
+
+
 	}
 
 
@@ -116,35 +125,39 @@ class StockinsController extends AppController
 	 * @throws NotFoundException
 	 * @param string $id
 	 * @return void
+	 * 
 	 */
 
 	public function add()
 	{
+		$this->loadModel('Material');
+		$this->loadModel('Stock');
+		$this->loadModel('Supplier');
+
+		// Fetch suppliers for dropdown
+		$suppliers = $this->Supplier->find('list', [
+			'fields' => ['Supplier.id', 'Supplier.name'],
+			'order' => ['Supplier.name' => 'ASC']
+		]);
+
 		if ($this->request->is('post')) {
 			$this->Stockin->create();
-			if ($this->Stockin->save($this->request->data)) {
 
-				// Get the submitted material_id and quantity
+			if ($this->Stockin->save($this->request->data)) {
+				$stockinId = $this->Stockin->id;
 				$materialId = $this->request->data['Stockin']['material_id'];
 				$addedQty = $this->request->data['Stockin']['quantity'];
 
-				// Load Stock model if not already loaded
-				$this->loadModel('Stock');
-
-				// Find the current stock for the material
+				// Update stock quantity
 				$stock = $this->Stock->find('first', [
 					'conditions' => ['Stock.material_id' => $materialId],
 					'recursive' => -1
 				]);
 
 				if ($stock) {
-					// Add the quantity to existing stock
 					$stock['Stock']['quantity'] += $addedQty;
-
-					// Save the updated stock quantity
 					$this->Stock->save($stock);
 				} else {
-					// If stock entry doesn’t exist, create one
 					$this->Stock->create();
 					$this->Stock->save([
 						'material_id' => $materialId,
@@ -152,17 +165,104 @@ class StockinsController extends AppController
 					]);
 				}
 
-				$this->Flash->success(__('The stockin has been saved and stock updated.'));
+				// Generate QR Code
+				$material = $this->Material->findById($materialId);
+				$materialName = $material['Material']['name'];
+				$safeMaterialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $materialName);
+
+				$qrDir = WWW_ROOT . 'img' . DS . 'qrcodes' . DS;
+				if (!file_exists($qrDir)) {
+					mkdir($qrDir, 0775, true);
+				}
+
+				$url = 'http://192.168.4.197/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
+				$qrFileName = 'material_' . $safeMaterialName . '_' . $stockinId . '.png';
+				$qrPath = $qrDir . $qrFileName;
+
+				App::import('Vendor', 'phpqrcode', ['file' => 'phpqrcode' . DS . 'qrlib.php']);
+				QRcode::png($url, $qrPath, 'L', 4, 2);
+
+				$this->Flash->success(__('The stockin has been saved, stock updated, and QR code generated.'));
 				return $this->redirect(['action' => 'index']);
 			} else {
 				$this->Flash->error(__('The stockin could not be saved. Please, try again.'));
 			}
 		}
 
-		$this->loadModel('Material');
-		$materials = $this->Material->find('list');
-		$this->set(compact('materials'));
+		// For both GET and failed POST request
+		$materials = $this->Material->find('list', ['fields' => ['Material.id', 'Material.name']]);
+		$this->set(compact('materials', 'suppliers'));
 	}
+
+
+	// public function add()
+	// {
+	// 	$this->loadModel('Material');
+	// 	$this->loadModel('Stock');
+
+	// 	if ($this->request->is('post')) {
+	// 		$this->Stockin->create();
+
+	// 		if ($this->Stockin->save($this->request->data)) {
+	// 			$stockinId = $this->Stockin->id;
+	// 			$materialId = $this->request->data['Stockin']['material_id'];
+	// 			$addedQty = $this->request->data['Stockin']['quantity'];
+
+	// 			// Update stock table
+	// 			$stock = $this->Stock->find('first', [
+	// 				'conditions' => ['Stock.material_id' => $materialId],
+	// 				'recursive' => -1
+	// 			]);
+
+	// 			if ($stock) {
+	// 				$stock['Stock']['quantity'] += $addedQty;
+	// 				$this->Stock->save($stock);
+	// 			} else {
+	// 				$this->Stock->create();
+	// 				$this->Stock->save([
+	// 					'material_id' => $materialId,
+	// 					'quantity' => $addedQty
+	// 				]);
+	// 			}
+
+	// 			$this->loadModel('Supplier');
+	// 			$suppliers = $this->Supplier->find('list', [
+	// 				'fields' => ['Supplier.id', 'Supplier.supplier_name'],
+	// 				'order' => ['Supplier.supplier_name' => 'ASC']
+	// 			]);
+
+
+	// 			// Get material name for QR generation
+	// 			$material = $this->Material->findById($materialId);
+	// 			$materialName = $material['Material']['name'];
+	// 			$safeMaterialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $materialName);
+
+	// 			// Generate QR code
+	// 			$url = 'http://192.168.4.197/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
+	// 			$qrDir = WWW_ROOT . 'img' . DS . 'qrcodes' . DS;
+
+	// 			if (!file_exists($qrDir)) {
+	// 				mkdir($qrDir, 0775, true);
+	// 			}
+
+	// 			$qrFileName = 'material_' . $safeMaterialName . '_' . $stockinId . '.png';
+	// 			$qrPath = $qrDir . $qrFileName;
+
+	// 			App::import('Vendor', 'phpqrcode', ['file' => 'phpqrcode' . DS . 'qrlib.php']);
+	// 			QRcode::png($url, $qrPath, 'L', 4, 2);
+
+	// 			$this->Flash->success(__('The stockin has been saved, stock updated, and QR code generated.'));
+	// 			return $this->redirect(['action' => 'index']);
+	// 		} else {
+	// 			$this->Flash->error(__('The stockin could not be saved. Please, try again.'));
+	// 		}
+	// 	}
+
+	// 	$materials = $this->Material->find('list', ['fields' => ['Material.id', 'Material.name']]);
+	// 	$this->set(compact('materials', 'suppliers'));
+
+	// }
+
 
 	// public function edit($id = null)
 	// {
