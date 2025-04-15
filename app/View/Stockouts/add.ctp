@@ -19,62 +19,67 @@
 	<div class="row">
 		<div class="col-md-10">
 			<div class="card card-body">
-				<h3 class="box-title m-b-0"><?php echo __('Add Stock out'); ?></h3>
+				<h3 class="box-title m-b-0">Add Stockout for: <?php echo h($materialName); ?></h3>
 				<p class="text-muted m-b-30 font-13"> </p>
 
 				<?php echo $this->Form->create('Stockout'); ?>
 				<div class="row">
 					<div class="col-md-6">
+
 						<?php
 						echo $this->Form->input('out_date', array('type' => 'text', 'class' => 'datepicker', 'readonly' => true, 'value' => date('Y-m-d')));
-						echo $this->Form->input('material_id', [
-							'id' => 'StockoutMaterialId',
-							'label' => 'Material',
-							'empty' => 'Select the item'
-						]);
+						// echo $this->Form->input('material_id', [
+						// 	'id' => 'StockoutMaterialId',
+						// 	'label' => 'Material',
+						// 	'empty' => 'Select the item'
+						// ]);
+
 						echo $this->Form->input('remaining_stocks', [
 							'id' => 'StockoutRemainingStocks',
 							'label' => 'Remaining Stocks',
 							'type' => 'text',
-							'readonly' => true
+							'readonly' => true,
+							'value' => $currentQuantity
 						]);
+
 						echo $this->Form->input('quantity_removed');
+						
 						echo $this->Form->input('note');
 						?>
-						
+
 					</div>
 
 				</div>
-                <br>
+				<br>
 				<?php echo $this->Form->end(array('label' => 'Submit', 'class' => 'btn btn-success')); ?>
 			</div>
 		</div>
 	</div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-	const materialDropdown = document.getElementById('StockoutMaterialId');
-	const remainingStockInput = document.getElementById('StockoutRemainingStocks');
+<!-- <script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const materialDropdown = document.getElementById('StockoutMaterialId');
+		const remainingStockInput = document.getElementById('StockoutRemainingStocks');
 
-	materialDropdown.addEventListener('change', function () {
-		const materialId = this.value;
-		if (materialId) {
-			fetch(`/assetmanagement/stockouts/get_stock_quantity/${materialId}`)
-				.then(response => response.json())
-				.then(data => {
-					remainingStockInput.value = data.quantity;
-				})
-				.catch(error => {
-					console.error("Error fetching stock:", error);
-					remainingStockInput.value = '0';
-				});
-		} else {
-			remainingStockInput.value = '';
-		}
+		materialDropdown.addEventListener('change', function () {
+			const materialId = this.value;
+			if (materialId) {
+				fetch(`/inventoryprint/stockouts/get_stock_quantity/${materialId}`)
+					.then(response => response.json())
+					.then(data => {
+						remainingStockInput.value = data.quantity;
+					})
+					.catch(error => {
+						console.error("Error fetching stock:", error);
+						remainingStockInput.value = '0';
+					});
+			} else {
+				remainingStockInput.value = '';
+			}
+		});
 	});
-});
-</script>
+</script> -->
 
 
 

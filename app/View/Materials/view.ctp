@@ -43,6 +43,8 @@
 					</div>
 				</div>
 				<br>
+				<img src="<?php echo $this->Html->url('/img/qrcodes/material_' . $material['Material']['id'] . '.png'); ?>" alt="QR Code">
+
 
 			</div>
 		</div>

@@ -23,25 +23,48 @@ class StockoutsController extends AppController
 	 *
 	 * @return void
 	 */
-	public function index()
-	{
-		$this->Stockout->recursive = 0;
-		$this->set('stockouts', $this->Paginator->paginate());
 
-		$this->loadModel('Stock');
-
-		$stockouts = $this->Stockout->find('all');
-
-		foreach ($stockouts as &$stockout) {
-			$stock = $this->Stock->find('first', [
-				'conditions' => ['Stock.material_id' => $stockout['Stockout']['material_id']],
-				'fields' => ['Stock.quantity']
-			]);
-			$stockout['Stock']['quantity'] = isset($stock['Stock']['quantity']) ? $stock['Stock']['quantity'] : 0;
-		}
-		$this->set('stockouts', $stockouts);
-
-	}
+	
+	 public function index()
+	 {
+		 $this->loadModel('Material');
+		 $this->loadModel('Stock');
+	 
+		 // Dropdown data
+		 $materials = $this->Material->find('list', [
+			 'fields' => ['Material.id', 'Material.name'],
+			 'order' => ['Material.name' => 'ASC']
+		 ]);
+	 
+		 $conditions = [];
+	 
+		 if (!empty($this->request->query['material_id'])) {
+			 $conditions['Stockout.material_id'] = $this->request->query['material_id'];
+		 }
+	 
+		 // Setup pagination
+		 $this->paginate = [
+			 'conditions' => $conditions,
+			 'contain' => ['Material'],
+			 'limit' => 20,
+			 'order' => ['Stockout.out_date' => 'DESC']
+		 ];
+	 
+		 $stockouts = $this->Paginator->paginate('Stockout');
+	 
+		 // Add quantity from Stock table
+		 foreach ($stockouts as &$stockout) {
+			 $stock = $this->Stock->find('first', [
+				 'conditions' => ['Stock.material_id' => $stockout['Stockout']['material_id']],
+				 'fields' => ['Stock.quantity'],
+				 'recursive' => -1
+			 ]);
+			 $stockout['Stock']['quantity'] = isset($stock['Stock']['quantity']) ? $stock['Stock']['quantity'] : 0;
+		 }
+	 
+		 $this->set(compact('stockouts', 'materials'));
+	 }
+	 
 
 	/**
 	 * view method
@@ -86,44 +109,135 @@ class StockoutsController extends AppController
 	 * @return void
 	 */
 
+	 public function add($materialId = null)
+	 {
+		 $this->loadModel('Stock');
+		 $this->loadModel('Material');
+	 
+		 if (!$materialId) {
+			 throw new NotFoundException(__('Material ID is required'));
+		 }
+	 
+		 $material = $this->Material->findById($materialId);
+		 if (!$material) {
+			 throw new NotFoundException(__('Invalid material'));
+		 }
+	 
+		 // Get current stock for this material
+		 $stock = $this->Stock->find('first', [
+			 'conditions' => ['Stock.material_id' => $materialId]
+		 ]);
+		 $currentQuantity = $stock ? $stock['Stock']['quantity'] : 0;
+	 
+		 if ($this->request->is('post')) {
+			 $this->Stockout->create();
+			 $this->request->data['Stockout']['material_id'] = $materialId;
+	 
+			 if ($this->Stockout->save($this->request->data)) {
+				 // Update stock quantity
+				 if ($stock) {
+					 $updatedQty = $currentQuantity - $this->request->data['Stockout']['quantity_removed'];
+					 $this->Stock->id = $stock['Stock']['id'];
+					 $this->Stock->saveField('quantity', $updatedQty);
+	 
+					 // Save the remaining stocks in the stockout
+					 $this->Stockout->saveField('remaining_stocks', $updatedQty);
+				 }
+	 
+				 $this->Flash->success(__('The stockout has been saved.'));
+				 return $this->redirect(['action' => 'viewByMaterial', $materialId]);
 
-	public function add()
-	{
-		if ($this->request->is('post')) {
-			$materialId = $this->request->data['Stockout']['material_id'];
-			$quantityRemoved = $this->request->data['Stockout']['quantity_removed'];
+			 } else {
+				 $this->Flash->error(__('The stockout could not be saved. Please, try again.'));
+			 }
+		 }
+	 
+		 $this->set(compact( 'currentQuantity'));
+		$this->set('materialId', $materialId);
+	    $this->set('materialName', $material['Material']['name']);
+	 }
+	 
 
-			// Load current stock
-			$this->loadModel('Stock');
-			$stock = $this->Stock->find('first', [
-				'conditions' => ['Stock.material_id' => $materialId]
-			]);
+	// public function add($materialId = null)
+	// {
+	// 	$this->loadModel('Stock');
+	// 	$this->loadModel('Material');
 
-			if ($stock) {
-				$remaining = $stock['Stock']['quantity'];
+	// 	if (!$materialId) {
+	// 		throw new NotFoundException(__('Material ID is required'));
+	// 	}
 
-				// Update stock quantity
-				$newQty = $remaining - $quantityRemoved;
-				$this->Stock->id = $stock['Stock']['id'];
-				$this->Stock->saveField('quantity', $newQty);
+	// 	$material = $this->Material->findById($materialId);
+	// 	if (!$material) {
+	// 		throw new NotFoundException(__('Invalid material'));
+	// 	}
 
-				// Set remaining_stocks for stockout
-				$this->request->data['Stockout']['remaining_stocks'] = $remaining;
+	// 	if ($this->request->is('post')) {
+	// 		$this->Stockout->create();
+	// 		$this->request->data['Stockout']['material_id'] = $materialId;
 
-				$this->Stockout->create();
-				if ($this->Stockout->save($this->request->data)) {
-					$this->Flash->success(__('The stockout has been saved.'));
-					return $this->redirect(['action' => 'index']);
-				}
-				$this->Flash->error(__('The stockout could not be saved. Please try again.'));
-			} else {
-				$this->Flash->error(__('Material not found in stock.'));
-			}
-		}
+	// 		if ($this->Stockout->save($this->request->data)) {
+	// 			// Decrease the stock quantity
+	// 			$stock = $this->Stock->findByMaterialId($materialId);
+	// 			if ($stock) {
+	// 				$updatedQty = $stock['Stock']['quantity'] - $this->request->data['Stockout']['quantity_removed'];
+	// 				$this->Stock->id = $stock['Stock']['id'];
+	// 				$this->Stock->saveField('quantity', $updatedQty);
 
-		$materials = $this->Stockout->Material->find('list');
-		$this->set(compact('materials'));
-	}
+	// 				// Save the remaining stocks in the stockout
+	// 				$this->Stockout->saveField('remaining_stocks', $updatedQty);
+	// 			}
+
+	// 			$this->Flash->success(__('The stockout has been saved.'));
+	// 			return $this->redirect(['action' => 'viewByMaterial', $materialId]);
+	// 		} else {
+	// 			$this->Flash->error(__('The stockout could not be saved. Please, try again.'));
+	// 		}
+	// 	}
+
+	// 	// Set material info for the view
+	// 	$this->set('materialId', $materialId);
+	// 	$this->set('materialName', $material['Material']['name']);
+	// }
+
+
+	// public function add()
+	// {
+	// 	if ($this->request->is('post')) {
+	// 		$materialId = $this->request->data['Stockout']['material_id'];
+	// 		$quantityRemoved = $this->request->data['Stockout']['quantity_removed'];
+
+	// 		// Load current stock
+	// 		$this->loadModel('Stock');
+	// 		$stock = $this->Stock->find('first', [
+	// 			'conditions' => ['Stock.material_id' => $materialId]
+	// 		]);
+
+	// 		if ($stock) {
+	// 			$remaining = $stock['Stock']['quantity'];
+
+	// 			// Update stock quantity
+	// 			$newQty = $remaining - $quantityRemoved;
+	// 			$this->Stock->id = $stock['Stock']['id'];
+	// 			$this->Stock->saveField('quantity', $newQty);
+
+	// 			// Set remaining_stocks for stockout
+	// 			$this->request->data['Stockout']['remaining_stocks'] = $remaining;
+
+	// 			$this->Stockout->create();
+	// 			if ($this->Stockout->save($this->request->data)) {
+	// 				$this->Flash->success(__('The stockout has been saved.'));
+	// 				return $this->redirect(['action' => 'index']);
+	// 			}
+	// 			$this->Flash->error(__('The stockout could not be saved. Please try again.'));
+	// 		} else {
+	// 			$this->Flash->error(__('Material not found in stock.'));
+	// 		}
+	// 	}
+
+	// 	$materials = $this->Stockout->Material->find('list');
+	// 	$this->set(compact('materials'));
+	// }
 
 	// public function edit($id = null)
 	// {
@@ -148,27 +262,27 @@ class StockoutsController extends AppController
 	public function edit($id = null)
 	{
 		$this->loadModel('Stock'); // Ensure this is here
-	
+
 		if (!$id) {
 			throw new NotFoundException(__('Invalid stockin'));
 		}
-	
+
 		$stockout = $this->Stockout->findById($id);
 		if (!$stockout) {
 			throw new NotFoundException(__('Invalid stockout'));
 		}
-	
+
 		if ($this->request->is(array('post', 'put'))) {
 			$oldQuantity = $stockout['Stockout']['quantity_removed'];
 			$materialId = $stockout['Stockout']['material_id'];
-	
+
 			$stock = $this->Stock->findByMaterialId($materialId);
 			if ($stock) {
 				$newStockQty = $stock['Stock']['quantity'] + $oldQuantity;
 				$this->Stock->id = $stock['Stock']['id'];
 				$this->Stock->saveField('quantity', $newStockQty);
 			}
-	
+
 			$this->Stockout->id = $id;
 			if ($this->Stockout->save($this->request->data)) {
 				$newQty = $this->request->data['Stockout']['quantity_removed'];
@@ -177,18 +291,18 @@ class StockoutsController extends AppController
 					$updatedQty = $stock['Stock']['quantity'] - $newQty;
 					$this->Stock->id = $stock['Stock']['id'];
 					$this->Stock->saveField('quantity', $updatedQty);
-	
+
 					// Update remaining_stocks in Stockout record
 					$this->Stockout->saveField('remaining_stocks', $updatedQty);
 				}
-	
+
 				$this->Flash->success(__('The stockout has been updated.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'viewByMaterial', $materialId));
 			}
 			$this->Session->Flash->error(__('Unable to update stockout.'));
 		} else {
 			$this->request->data = $stockout;
-	
+
 			// Populate remaining_stocks from stocks table
 			$materialId = $stockout['Stockout']['material_id'];
 			$stock = $this->Stock->findByMaterialId($materialId);
@@ -197,7 +311,7 @@ class StockoutsController extends AppController
 			}
 		}
 	}
-	
+
 
 	/**
 	 * delete method
@@ -277,6 +391,58 @@ class StockoutsController extends AppController
 		header('Content-Type: application/json');
 		echo json_encode(['quantity' => $quantity]);
 	}
+
+
+	public function materialHistory($materialId = null)
+	{
+		if (!$materialId) {
+			throw new NotFoundException(__('Invalid Material ID'));
+		}
+
+		$this->paginate = [
+			'conditions' => ['Stockout.material_id' => $materialId],
+			'order' => ['Stockout.created' => 'DESC']
+		];
+
+		$stockouts = $this->paginate('Stockout');
+
+		$this->loadModel('Material');
+		$material = $this->Material->findById($materialId);
+
+		if (!$material) {
+			throw new NotFoundException(__('Invalid material'));
+		}
+
+		$this->set('materialName', $material['Material']['name']);
+
+		$this->set(compact('stockouts', 'materialId'));
+	}
+
+	public function viewByMaterial($materialId = null)
+{
+    $this->loadModel('Stockout');
+    $this->loadModel('Material');
+
+    if (!$materialId) {
+        throw new NotFoundException(__('Material ID is required'));
+    }
+
+    $material = $this->Material->findById($materialId);
+    if (!$material) {
+        throw new NotFoundException(__('Material not found'));
+    }
+
+    $stockouts = $this->Stockout->find('all', [
+        'conditions' => ['Stockout.material_id' => $materialId],
+        'order' => ['Stockout.out_date' => 'DESC']
+    ]);
+
+    $materialName = $material['Material']['name']; // Adjust to your column
+
+    $this->set(compact('materialId', 'materialName', 'stockouts'));
+}
+
+
 
 
 

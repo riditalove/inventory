@@ -22,9 +22,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 				<li class="breadcrumb-item active">Stocks</li>
 			</ol>
 		</div>
-		<div class="col-md-6 col-4 align-self-center">
-			<?php echo $this->Html->link("<i class='fa fa-plus-circle'></i> Add New", array('action' => 'add'), array('class' => 'btn pull-right btn-success', 'escape' => false)); ?>
-		</div>
+
 	</div>
 	<!-- ============================================================== -->
 	<!-- End Bread crumb and right sidebar toggle -->
@@ -38,32 +36,36 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 				<div class="card-body">
 					<div class="panel panel-info">
 						<div class="panel-body">
-							<?php echo $this->Form->create('Src', array('class' => 'form-horizontal')); ?>
+							
+							<!-- Search Form -->
+
 							<table class="table table-condensed table-bordered table-hover contact-list no-wrap">
 								<tr>
 									<?php
-									if (!empty($this->request->data['Src']['df'])) {
-										$df = $this->request->data['Src']['df'];
-									} else {
-										$df = '';
-									}
-									if (!empty($this->request->data['Src']['dt'])) {
-										$dt = $this->request->data['Src']['dt'];
-									} else {
-										$dt = '';
-									}
+									echo $this->Form->create(false, [
+										'type' => 'get',
+										'url' => ['controller' => 'stockouts', 'action' => 'index'],
+										'class' => 'form-inline'
+									]);
 									?>
-									<th><?php echo __('Company'); ?></th>
-									<td><?php echo $this->Form->input('company_id', array('label' => false, 'empty' => 'Please Select')); ?>
+									<th><?php echo __('Stock Name'); ?></th>
+									<td>
+										<?php
+										echo $this->Form->input('material_id', [
+											'label' => false,
+											'type' => 'select',
+											'options' => $materials,
+											'empty' => 'Select Material',
+											'class' => 'form-control'
+										]);
+										?>
 									</td>
-									<td><?php echo $this->Form->input('df', array('readonly' => 'readonly', 'label' => 'Date From', 'value' => $df)); ?>
-									</td>
-									<td><?php echo $this->Form->input('dt', array('readonly' => 'readonly', 'label' => 'Date To', 'value' => $dt)); ?>
-									</td>
-									<td><?php echo $this->Form->button('Search', array('class' => 'btn btn-info', 'name' => 'btnsrc')); ?>
+									<td>
+										<?php echo $this->Form->button('Search', ['class' => 'btn btn-info']); ?>
 									</td>
 								</tr>
 							</table>
+							<?php echo $this->Form->end(); ?>
 
 							<p class="paginginfo float-left">
 								<?php
@@ -127,7 +129,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 											<?php echo $this->Html->link($stockout['Material']['name'], array('controller' => 'materials', 'action' => 'view', $stockout['Material']['id'])); ?>
 										</td>
 										<td><?php echo h($stockout['Stockout']['quantity_removed']); ?>&nbsp;</td>
-                                        <td><?php echo h($stockout['Stockout']['note']); ?>&nbsp;</td>
+										<td><?php echo h($stockout['Stockout']['note']); ?>&nbsp;</td>
 										<td class="actions">
 											<?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $stockout['Stockout']['id']), array('escape' => false)); ?>
 											<?php echo $this->Html->link(__('<i class="icon-pencil7 text-success" title="Edit"></i>'), array('action' => 'edit', $stockout['Stockout']['id']), array('escape' => false)); ?>
