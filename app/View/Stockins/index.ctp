@@ -106,6 +106,8 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 									<th><?php echo $this->Paginator->sort('date'); ?></th>
 									<th><?php echo $this->Paginator->sort('quantity'); ?></th>
 									<th><?php echo $this->Paginator->sort('supplier_id'); ?></th>
+									<th>QR Code</th>
+
 									<th class="actions"><?php echo __('Actions'); ?></th>
 								</tr>
 
@@ -126,7 +128,79 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 												: 'NULL';
 											?>
 										</td>
+                    
+                    	<!-- <td>
+											<?php
+											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
+											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
+											$qrPath = 'img/qrcodes/' . $qrFileName;
+											?>
+
+											<?php if (file_exists(WWW_ROOT . $qrPath)): ?>
+												<a href="<?php echo $this->webroot . $qrPath; ?>" target="_blank">
+													<?php echo $this->Html->image($qrPath, [
+														'style' => 'width: 60px; height: 60px;',
+														'alt' => 'QR Code',
+														'title' => 'Click to view or download'
+													]); ?>
+												</a>
+											<?php else: ?>
+												<span class="text-muted">Not Generated</span>
+											<?php endif; ?>
+										</td> -->
+										<!-- <td>
+											<?php
+											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
+											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
+											$qrPath = 'img/qrcodes/' . $qrFileName;
+											$qrFullPath = WWW_ROOT . $qrPath;
+											?>
+
+											<?php if (file_exists($qrFullPath)): ?>
+												<a href="<?php echo $this->webroot . $qrPath; ?>" target="_blank"
+													title="Click to view or download QR Code">
+													<?php echo $this->Html->image('icons/qr-icon.png', [
+														'style' => 'width: 24px; height: 24px;',
+														'alt' => 'QR Code Icon'
+													]); ?>
+												</a>
+											<?php else: ?>
+												<span class="text-muted">Not Generated</span>
+											<?php endif; ?>
+										</td> -->
+										<td>
+											<?php
+											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
+											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
+											$qrPath = 'img/qrcodes/' . $qrFileName;
+											$qrFullPath = WWW_ROOT . $qrPath;
+											?>
+
+											<?php if (file_exists($qrFullPath)): ?>
+												<a href="<?php echo $this->webroot . $qrPath; ?>" target="_blank"
+													title="Click to view or download QR Code">
+													<?php echo $this->Html->image('icons/qr-icon.png', [
+														'style' => 'width: 24px; height: 24px;',
+														'alt' => 'QR Code Icon'
+													]); ?>
+												</a>
+
+												<!-- Print Button -->
+												<a href="<?php echo $this->Html->url(['action' => 'print_qr', $stockin['Stockin']['id']]); ?>"
+													target="_blank" title="Print QR">
+													<?php echo $this->Html->image('icons/print-icon.png', [
+														'style' => 'width: 24px; height: 24px;',
+														'alt' => 'Print QR Code'
+													]); ?>
+												</a>
+											<?php else: ?>
+												<span class="text-muted">Not Generated</span>
+											<?php endif; ?>
+										</td>
+
+
 										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
+
 
 
 										<td class="actions">
