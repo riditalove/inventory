@@ -384,4 +384,20 @@ class StockinsController extends AppController
 		return $this->redirect(array('action' => 'index'));
 	}
 
+	public function print_qr($id = null) {
+		$this->layout = 'ajax'; // Use minimal layout
+		$this->Stockin->id = $id;
+		if (!$this->Stockin->exists()) {
+			throw new NotFoundException(__('Invalid stockin'));
+		}
+	
+		$stockin = $this->Stockin->find('first', [
+			'conditions' => ['Stockin.id' => $id],
+			'contain' => ['Material']
+		]);
+	
+		$this->set(compact('stockin'));
+	}
+	
+
 }
