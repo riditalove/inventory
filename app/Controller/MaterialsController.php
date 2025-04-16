@@ -67,7 +67,7 @@ class MaterialsController extends AppController {
             }
 
             // URL accessible from phone
-            $url = 'http://192.168.4.197/inventoryprint/stockouts/viewByMaterial/' . $materialId;
+            $url = 'http://localhost/inventoryprint/stockouts/viewByMaterial/' . $materialId;
             $qrFileName = 'material_' . $materialName . '.png';
             $qrPath = $qrDir . $qrFileName;
 

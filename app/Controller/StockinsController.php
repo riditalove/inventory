@@ -175,7 +175,7 @@ class StockinsController extends AppController
 					mkdir($qrDir, 0775, true);
 				}
 
-				$url = 'http://192.168.4.197/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
+				$url = 'http://localhost/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
 				$qrFileName = 'material_' . $safeMaterialName . '_' . $stockinId . '.png';
 				$qrPath = $qrDir . $qrFileName;
 

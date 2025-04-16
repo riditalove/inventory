@@ -104,7 +104,11 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 									<th><?php echo $this->Paginator->sort('id'); ?></th>
 									<th><?php echo $this->Paginator->sort('material_id'); ?></th>
 									<th><?php echo $this->Paginator->sort('date'); ?></th>
+									<th>Aging</th>
 									<th><?php echo $this->Paginator->sort('quantity'); ?></th>
+									<th><?php echo $this->Paginator->sort('quantity_unit'); ?></th>
+									<th><?php echo $this->Paginator->sort('unit_price'); ?></th>
+									<th><?php echo $this->Paginator->sort('currency'); ?></th>
 									<th><?php echo $this->Paginator->sort('supplier_id'); ?></th>
 									<th>QR Code</th>
 
@@ -121,7 +125,26 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 											<?php echo $this->Html->link($stockin['Material']['name'], array('controller' => 'materials', 'action' => 'view', $stockin['Material']['id'])); ?>
 										</td>
 										<td><?php echo h($stockin['Stockin']['date']); ?>&nbsp;</td>
+                    
                     <td>
+											<?php
+											$stockinDate = new DateTime($stockin['Stockin']['date']);
+											$today = new DateTime();
+											$interval = $today->diff($stockinDate);
+											echo $interval->days . ' days';
+											?>
+										</td>
+                    
+										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
+										<td><?php echo h($stockin['Stockin']['quantity_unit']); ?>&nbsp;</td>
+										<td><?php echo h($stockin['Stockin']['unit_price']); ?>&nbsp;</td>
+										<td><?php echo h($stockin['Stockin']['currency']); ?>&nbsp;</td>
+									
+
+                    <td>
+
+
+
 											<?php
 											echo !empty($stockin['Stockin']['supplier_id']) && isset($suppliers[$stockin['Stockin']['supplier_id']])
 												? h($suppliers[$stockin['Stockin']['supplier_id']])
