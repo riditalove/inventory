@@ -125,7 +125,8 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 											<?php echo $this->Html->link($stockin['Material']['name'], array('controller' => 'materials', 'action' => 'view', $stockin['Material']['id'])); ?>
 										</td>
 										<td><?php echo h($stockin['Stockin']['date']); ?>&nbsp;</td>
-										<td>
+                    
+                    <td>
 											<?php
 											$stockinDate = new DateTime($stockin['Stockin']['date']);
 											$today = new DateTime();
@@ -133,18 +134,25 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 											echo $interval->days . ' days';
 											?>
 										</td>
+                    
 										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
 										<td><?php echo h($stockin['Stockin']['quantity_unit']); ?>&nbsp;</td>
 										<td><?php echo h($stockin['Stockin']['unit_price']); ?>&nbsp;</td>
 										<td><?php echo h($stockin['Stockin']['currency']); ?>&nbsp;</td>
-										<td>
+									
+
+                    <td>
+
+
+
 											<?php
 											echo !empty($stockin['Stockin']['supplier_id']) && isset($suppliers[$stockin['Stockin']['supplier_id']])
 												? h($suppliers[$stockin['Stockin']['supplier_id']])
 												: 'NULL';
 											?>
 										</td>
-										<!-- <td>
+                    
+                    	<!-- <td>
 											<?php
 											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
 											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
@@ -214,6 +222,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 										</td>
 
 
+										<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
 
 
 
