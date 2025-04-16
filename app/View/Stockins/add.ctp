@@ -29,6 +29,27 @@
 						echo $this->Form->input('material_id');
 						echo $this->Form->input('date', array('type' => 'text', 'class' => 'datepicker', 'readonly' => true, 'value' => date('Y-m-d')));
 						echo $this->Form->input('quantity');
+						echo $this->Form->input('quantity_unit', [
+							'label' => 'Select Unit',
+							'type' => 'select',
+							'options' => ['kg' => 'Kg', 'g' => 'G', 'l' => 'L', 'ml' => 'ML', 'm' => 'M', 'cm' => 'CM', 'mm' => 'MM', 'pcs' => 'Pcs', 'box' => 'Box', 'roll' => 'Roll', 'bottle' => 'Bottle', 'piece' => 'Piece', 'unit' => 'Unit', 'set' => 'Set', 'pair' => 'Pair', 'dozen' => 'Dozen', 'pack' => 'Pack', 'case' => 'Case', 'carton' => 'Carton','rim' => 'Rim', 'pallet' => 'Pallet', 'ton' => 'Ton', 'yard' => 'Yard', 'foot' => 'Foot', 'inch' => 'Inch', 'square meter' => 'Square Meter', 'cubic meter' => 'Cubic Meter'],
+							'empty' => 'Select Unit',
+							'class' => 'form-control'
+						]);
+						
+						echo $this->Form->input('unit_price',[
+							'label' => 'Price Per Unit',
+						]);
+
+						echo $this->Form->input('currency',[
+							'label' => 'Select Currency',
+							'type' => 'select',
+							'options' => ['USD' => 'USD', 'EUR' => 'EUR', 'GBP' => 'GBP', 'INR' => 'INR', 'JPY' => 'JPY', 'CNY' => 'CNY', 'AUD' => 'AUD', 'CAD' => 'CAD', 'CHF' => 'CHF', 'NZD' => 'NZD', 'SGD' => 'SGD', 'HKD' => 'HKD', 'SEK' => 'SEK', 'NOK' => 'NOK', 'MXN' => 'MXN', 'BRL' => 'BRL'],
+							'empty' => 'Select Currency',
+							'class' => 'form-control'
+						]);
+
+
 						echo $this->Form->input('supplier_id', [
 							'label' => 'Supplier',
 							'type' => 'select',
