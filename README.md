@@ -1,44 +1,31 @@
 # CakePHP
 
-[![Latest Stable Version](https://poser.pugx.org/cakephp/cakephp/v/stable.svg)](https://packagist.org/packages/cakephp/cakephp)
-[![License](https://poser.pugx.org/cakephp/cakephp/license.svg)](https://packagist.org/packages/cakephp/cakephp)
-[![Bake Status](https://secure.travis-ci.org/cakephp/cakephp.png?branch=master)](https://travis-ci.org/cakephp/cakephp)
-[![Code consistency](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/grade.svg)](https://squizlabs.github.io/PHP_CodeSniffer/analysis/cakephp/cakephp/)
+# Inventory Management System with QR & Role-Based Access
 
-CakePHP is a rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC.
-Our primary goal is to provide a structured framework that enables PHP users at all levels to rapidly develop robust web applications, without any loss to flexibility.
+A CakePHP 2.10.2-based inventory system with real-time QR code generation, role-based access, and stock tracking.
 
+## 🚀 Features
+- Add/Edit/Delete stockins & stockouts
+- QR code preview and print functionality
+- Role-based access control (Admin, Employee)
+- Low stock alert system
 
-## Some Handy Links
+## 🛠 Tech Stack
+- PHP (CakePHP 2.10.2), MySQL, JavaScript, Bootstrap
 
-[CakePHP](https://cakephp.org) - The rapid development PHP framework
+## 📷 Screenshots
+[Dashboard]![Screenshot 2025-04-16 124517](https://github.com/user-attachments/assets/d36ce216-5c6e-409b-b8c8-c7f465abc07e)
 
-[CookBook](https://book.cakephp.org) - THE CakePHP user documentation; start learning here!
+[Material List]![Screenshot 2025-04-16 124553](https://github.com/user-attachments/assets/e18549b7-c914-42b0-bad6-262394e1d03c)
 
-[API](https://api.cakephp.org) - A reference to CakePHP's classes
+[Sidebar Menu]![Screenshot 2025-04-16 124611](https://github.com/user-attachments/assets/a039c10e-379d-42fc-97ea-c1da6640609b)
 
-[Plugins](https://plugins.cakephp.org) - A repository of extensions to the framework
+[Filtering a material by its name]![Screenshot 2025-04-16 124654](https://github.com/user-attachments/assets/49957258-a2a1-45cb-a971-582ad1e76843)
 
-[The Bakery](https://bakery.cakephp.org) - Tips, tutorials and articles
+[Stockin with QR code printing functionality]![Screenshot 2025-04-16 124717](https://github.com/user-attachments/assets/356ef821-4a7b-4a4a-903b-5ffa28a895d0)
 
-[Community Center](https://community.cakephp.org) - A source for everything community related
+[Stockout Record List]![Screenshot 2025-04-16 124744](https://github.com/user-attachments/assets/90625bf4-a119-4f77-8bcb-f80d6c24e866)
 
-[Training](https://training.cakephp.org) - Join a live session and get skilled with the framework
-
-[CakeFest](https://cakefest.org) - Don't miss our annual CakePHP conference
-
-[Cake Software Foundation](https://cakefoundation.org) - Promoting development related to CakePHP
-
-
-## Get Support!
-
-[#cakephp](https://webchat.freenode.net/?channels=#cakephp) on irc.freenode.net - Come chat with us, we have cake
-
-[Google Group](https://groups.google.com/group/cake-php) - Community mailing list and forum
-
-[GitHub Issues](https://github.com/cakephp/cakephp/issues) - Got issues? Please tell us!
-
-[Roadmaps](https://github.com/cakephp/cakephp/wiki#roadmaps) - Want to contribute? Get involved!
 
 
 ## Contributing

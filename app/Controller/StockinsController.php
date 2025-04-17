@@ -32,12 +32,11 @@ class StockinsController extends AppController
 	public function index()
 	{
 		$this->loadModel('Material');
-		$this->loadModel('Supplier');
-
-		$suppliers = $this->Supplier->find('list', [
+    $this->loadModel('Supplier');
+    $suppliers = $this->Supplier->find('list', [
 			'fields' => ['Supplier.id', 'Supplier.name'],
-
 		]);
+    
 		$materials = $this->Material->find('list', [
 			'fields' => ['Material.id', 'Material.name'],
 			'order' => ['Material.name' => 'ASC']
@@ -58,7 +57,10 @@ class StockinsController extends AppController
 		];
 
 		$stockins = $this->Paginator->paginate('Stockin');
+
 		$this->set(compact('stockins', 'materials', 'suppliers'));
+
+
 	}
 
 
