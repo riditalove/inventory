@@ -27,33 +27,29 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="panel panel-info">
+
 						<div class="panel-body">
-							<?php echo $this->Form->create('Src', array('class' => 'form-horizontal')); ?>
+							<!-- Search Form -->
+							<?php echo $this->Form->create('Stock', ['type' => 'get', 'class' => 'form-inline']); ?>
 							<table class="table table-condensed table-bordered table-hover contact-list no-wrap">
 								<tr>
-									<?php
-									if (!empty($this->request->data['Src']['df'])) {
-										$df = $this->request->data['Src']['df'];
-									} else {
-										$df = '';
-									}
-									if (!empty($this->request->data['Src']['dt'])) {
-										$dt = $this->request->data['Src']['dt'];
-									} else {
-										$dt = '';
-									}
-									?>
-									<th><?php echo __('Company'); ?></th>
-									<td><?php echo $this->Form->input('company_id', array('label' => false, 'empty' => 'Please Select')); ?>
+									<th><?php echo __('Material Name'); ?></th>
+									<td>
+										<?php
+										echo $this->Form->input('material_id', [
+											'label' => false,
+											'empty' => 'Please Select',
+											'options' => $materials,
+											'class' => 'form-control'
+										]);
+										?>
 									</td>
-									<td><?php echo $this->Form->input('df', array('readonly' => 'readonly', 'label' => 'Date From', 'value' => $df)); ?>
-									</td>
-									<td><?php echo $this->Form->input('dt', array('readonly' => 'readonly', 'label' => 'Date To', 'value' => $dt)); ?>
-									</td>
-									<td><?php echo $this->Form->button('Search', array('class' => 'btn btn-info', 'name' => 'btnsrc')); ?>
+									<td>
+										<?php echo $this->Form->button('Search', ['class' => 'btn btn-info', 'name' => 'btnsrc']); ?>
 									</td>
 								</tr>
 							</table>
+							<?php echo $this->Form->end(); ?>
 
 							<p class="paginginfo float-left">
 								<?php
@@ -103,11 +99,14 @@
 							</thead>
 
 							<tbody>
-								<?php foreach ($materials as $material): ?>
+								<?php foreach ($filteredMaterials as $material): ?>
 									<tr>
-
-										<td><?php echo h($material['Material']['id']); ?>&nbsp;</td>
-										<td><?php echo h($material['Material']['name']); ?>&nbsp;</td>
+										<td>
+											<?php echo $this->Html->link($material['Material']['id'], array('controller' => 'materials', 'action' => 'view', $material['Material']['id'])); ?>
+										</td>
+										<td>
+											<?php echo $this->Html->link($material['Material']['name'], array('controller' => 'materials', 'action' => 'view', $material['Material']['id'])); ?>
+										</td>
 
 										<td class="actions">
 											<?php echo $this->Html->link(__('<i class="icon-eye" title="View"></i>'), array('action' => 'view', $material['Material']['id']), array('escape' => false)); ?>
@@ -129,51 +128,3 @@
 	</div>
 
 </div>
-
-
-
-
-<!-- <div class="materials index">
-	<h2><?php echo __('Materials'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
-	<thead>
-	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('name'); ?></th>
-			<th class="actions"><?php echo __('Actions'); ?></th>
-	</tr>
-	</thead>
-	<tbody>
-	<?php foreach ($materials as $material): ?>
-	<tr>
-		<td><?php echo h($material['Material']['id']); ?>&nbsp;</td>
-		<td><?php echo h($material['Material']['name']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $material['Material']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $material['Material']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $material['Material']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $material['Material']['id']))); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</tbody>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-		'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-	<div class="paging">
-	<?php
-	echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Material'), array('action' => 'add')); ?></li>
-	</ul>
-</div> -->

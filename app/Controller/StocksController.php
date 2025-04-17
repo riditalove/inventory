@@ -21,36 +21,29 @@ class StocksController extends AppController
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function index()
+	{
 		$this->loadModel('Material');
-	
+
 		$materials = $this->Material->find('list', [
-			'fields' => ['Material.id', 'Material.name']
+			'fields' => ['Material.id', 'Material.name'],
+			'order' => ['Material.name' => 'ASC']
 		]);
-	
+
 		$conditions = [];
-	
+
 		if (!empty($this->request->query['material_id'])) {
 			$conditions['Stock.material_id'] = $this->request->query['material_id'];
 		}
-	
+
 		$stocks = $this->Stock->find('all', [
 			'conditions' => $conditions,
 			'contain' => ['Material']
 		]);
-	
+
 		$this->set(compact('materials', 'stocks'));
 	}
-	
-	// public function index()
-	// {
-	// 	$this->Stock->recursive = 0;
-	// 	$this->set('stocks', $this->Paginator->paginate());
-	// 	$this->loadModel('Material');
-	// 	$materials = $this->Material->find('list', ['fields' => ['Material.id', 'Material.name']]);
-	// 	$this->set(compact('materials'));
 
-	// }
 
 	/**
 	 * view method

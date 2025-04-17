@@ -74,27 +74,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- <div class="stockouts form">
-<?php echo $this->Form->create('Stockout'); ?>
-	<fieldset>
-		<legend><?php echo __('Edit Stockout'); ?></legend>
-	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('out_date');
-		echo $this->Form->input('remaining_stocks');
-		// echo $this->Form->input('material_id');
-		echo $this->Form->input('quantity_removed');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
 
-		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Stockout.id')), array('confirm' => __('Are you sure you want to delete # %s?', $this->Form->value('Stockout.id')))); ?></li>
-		<li><?php echo $this->Html->link(__('List Stockouts'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Materials'), array('controller' => 'materials', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Material'), array('controller' => 'materials', 'action' => 'add')); ?> </li>
-	</ul>
-</div> -->

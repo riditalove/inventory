@@ -151,46 +151,7 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 												: 'NULL';
 											?>
 										</td>
-                    
-                    	<!-- <td>
-											<?php
-											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
-											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
-											$qrPath = 'img/qrcodes/' . $qrFileName;
-											?>
 
-											<?php if (file_exists(WWW_ROOT . $qrPath)): ?>
-												<a href="<?php echo $this->webroot . $qrPath; ?>" target="_blank">
-													<?php echo $this->Html->image($qrPath, [
-														'style' => 'width: 60px; height: 60px;',
-														'alt' => 'QR Code',
-														'title' => 'Click to view or download'
-													]); ?>
-												</a>
-											<?php else: ?>
-												<span class="text-muted">Not Generated</span>
-											<?php endif; ?>
-										</td> -->
-										<!-- <td>
-											<?php
-											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
-											$qrFileName = 'material_' . $materialName . '_' . $stockin['Stockin']['id'] . '.png';
-											$qrPath = 'img/qrcodes/' . $qrFileName;
-											$qrFullPath = WWW_ROOT . $qrPath;
-											?>
-
-											<?php if (file_exists($qrFullPath)): ?>
-												<a href="<?php echo $this->webroot . $qrPath; ?>" target="_blank"
-													title="Click to view or download QR Code">
-													<?php echo $this->Html->image('icons/qr-icon.png', [
-														'style' => 'width: 24px; height: 24px;',
-														'alt' => 'QR Code Icon'
-													]); ?>
-												</a>
-											<?php else: ?>
-												<span class="text-muted">Not Generated</span>
-											<?php endif; ?>
-										</td> -->
 										<td>
 											<?php
 											$materialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $stockin['Material']['name']);
@@ -250,58 +211,3 @@ echo $this->Html->css('prnt', array('media' => 'print'));
 
 
 
-
-<!-- <div class="stockins index">
-	<h2><?php echo __('Stockins'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
-	<thead>
-	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('material_id'); ?></th>
-			<th><?php echo $this->Paginator->sort('date'); ?></th>
-			<th><?php echo $this->Paginator->sort('quantity'); ?></th>
-			<th><?php echo $this->Paginator->sort('size'); ?></th>
-			<th class="actions"><?php echo __('Actions'); ?></th>
-	</tr>
-	</thead>
-	<tbody>
-	<?php foreach ($stockins as $stockin): ?>
-	<tr>
-		<td><?php echo h($stockin['Stockin']['id']); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($stockin['Material']['name'], array('controller' => 'materials', 'action' => 'view', $stockin['Material']['id'])); ?>
-		</td>
-		<td><?php echo h($stockin['Stockin']['date']); ?>&nbsp;</td>
-		<td><?php echo h($stockin['Stockin']['quantity']); ?>&nbsp;</td>
-		<td><?php echo h($stockin['Stockin']['size']); ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $stockin['Stockin']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $stockin['Stockin']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $stockin['Stockin']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $stockin['Stockin']['id']))); ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</tbody>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-		'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-	<div class="paging">
-	<?php
-	echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Stockin'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Materials'), array('controller' => 'materials', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Material'), array('controller' => 'materials', 'action' => 'add')); ?> </li>
-	</ul>
-</div> -->

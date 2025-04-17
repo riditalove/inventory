@@ -47,6 +47,54 @@
 						]);
 
 						echo $this->Form->input('quantity');
+
+						echo $this->Form->input('quantity_unit', [
+							'options' => [
+								'kg' => 'Kg',
+								'g' => 'G',
+								'l' => 'L',
+								'ml' => 'ML',
+								'm' => 'M',
+								'cm' => 'CM',
+								'mm' => 'MM',
+								'pcs' => 'Pcs',
+								'box' => 'Box',
+								'roll' => 'Roll',
+								'bottle' => 'Bottle',
+								'piece' => 'Piece',
+								'unit' => 'Unit',
+								'set' => 'Set',
+								'pair' => 'Pair',
+								'dozen' => 'Dozen',
+								'pack' => 'Pack',
+								'case' => 'Case',
+								'carton' => 'Carton',
+								'rim' => 'Rim',
+								'pallet' => 'Pallet',
+								'ton' => 'Ton',
+								'yard' => 'Yard',
+								'foot' => 'Foot',
+								'inch' => 'Inch',
+								'square meter' => 'Square Meter',
+								'cubic meter' => 'Cubic Meter'
+							],
+							'class' => 'form-control',
+							'empty' => false
+						]);
+
+
+						echo $this->Form->input('unit_price', [
+							'label' => 'Price Per Unit',
+						]);
+
+						echo $this->Form->input('currency', [
+							'label' => 'Select Currency',
+							'type' => 'select',
+							'options' => ['USD' => 'USD', 'EUR' => 'EUR', 'GBP' => 'GBP', 'INR' => 'INR', 'JPY' => 'JPY', 'CNY' => 'CNY', 'AUD' => 'AUD', 'CAD' => 'CAD', 'CHF' => 'CHF', 'NZD' => 'NZD', 'SGD' => 'SGD', 'HKD' => 'HKD', 'SEK' => 'SEK', 'NOK' => 'NOK', 'MXN' => 'MXN', 'BRL' => 'BRL'],
+							'empty' => 'Select Currency',
+							'class' => 'form-control'
+						]);
+
 						if (!empty($this->request->data['Supplier']['name'])) {
 							echo $this->Form->label('supplier_id', 'Supplier Name');
 							echo $this->Form->text('supplier_name', [
@@ -70,28 +118,3 @@
 	</div>
 </div>
 
-
-<!-- <div class="stockins form">
-<?php echo $this->Form->create('Stockin'); ?>
-	<fieldset>
-		<legend><?php echo __('Edit Stockin'); ?></legend>
-	<?php
-	echo $this->Form->input('id');
-	echo $this->Form->input('material_id');
-	echo $this->Form->input('date');
-	echo $this->Form->input('quantity');
-	echo $this->Form->input('size');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $this->Form->value('Stockin.id')), array('confirm' => __('Are you sure you want to delete # %s?', $this->Form->value('Stockin.id')))); ?></li>
-		<li><?php echo $this->Html->link(__('List Stockins'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Materials'), array('controller' => 'materials', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Material'), array('controller' => 'materials', 'action' => 'add')); ?> </li>
-	</ul>
-</div> -->
