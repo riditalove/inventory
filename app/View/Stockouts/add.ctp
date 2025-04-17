@@ -33,7 +33,7 @@
 						// 	'label' => 'Material',
 						// 	'empty' => 'Select the item'
 						// ]);
-
+						
 						echo $this->Form->input('remaining_stocks', [
 							'id' => 'StockoutRemainingStocks',
 							'label' => 'Remaining Stocks',
@@ -42,8 +42,12 @@
 							'value' => $currentQuantity
 						]);
 
-						echo $this->Form->input('quantity_removed');
+						$quantityRemovedAttributes = ($currentQuantity == 0) ? ['readonly' => true, 'disabled' => true] : [];
+
+						echo $this->Form->input('quantity_removed', $quantityRemovedAttributes);
+
 						
+
 						echo $this->Form->input('note');
 						?>
 
@@ -57,56 +61,3 @@
 	</div>
 </div>
 
-<!-- <script>
-	document.addEventListener('DOMContentLoaded', function () {
-		const materialDropdown = document.getElementById('StockoutMaterialId');
-		const remainingStockInput = document.getElementById('StockoutRemainingStocks');
-
-		materialDropdown.addEventListener('change', function () {
-			const materialId = this.value;
-			if (materialId) {
-				fetch(`/inventoryprint/stockouts/get_stock_quantity/${materialId}`)
-					.then(response => response.json())
-					.then(data => {
-						remainingStockInput.value = data.quantity;
-					})
-					.catch(error => {
-						console.error("Error fetching stock:", error);
-						remainingStockInput.value = '0';
-					});
-			} else {
-				remainingStockInput.value = '';
-			}
-		});
-	});
-</script> -->
-
-
-
-
-<!-- <div class="stockouts form">
-<?php echo $this->Form->create('Stockout'); ?>
-	<fieldset>
-		<legend><?php echo __('Add Stockout'); ?></legend>
-	<?php
-	echo $this->Form->input('out_date');
-	echo $this->Form->input('material_id', [
-		'id' => 'StockoutMaterialId',
-		'label' => 'Material'
-	]);
-	echo $this->Form->input('quantity_removed');
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Html->link(__('List Stockouts'), array('action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('List Materials'), array('controller' => 'materials', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Material'), array('controller' => 'materials', 'action' => 'add')); ?> </li>
-	</ul>
-</div>
-
- -->

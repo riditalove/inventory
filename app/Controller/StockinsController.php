@@ -24,29 +24,10 @@ class StockinsController extends AppController
 	 *
 	 * @return void
 	 */
-	// public function index()
-	// {
-	// 	$this->loadModel('Material');
+	
 
-	// 	$materials = $this->Material->find('list', [
-	// 		'fields' => ['Material.id', 'Material.name']
-	// 	]);
 
-	// 	$conditions = [];
 
-	// 	if (!empty($this->request->query['material_id'])) {
-	// 		$conditions['Stock.material_id'] = $this->request->query['material_id'];
-	// 	}
-
-	// 	$stockin = $this->Stockin->find('all', [
-	// 		'conditions' => $conditions,
-	// 		'contain' => ['Stockin']
-	// 	]);
-
-	// 	$this->Stockin->recursive = 0;
-	// 	$this->set('stockins', $this->Paginator->paginate());
-	// 	$this->set(compact('materials'));
-	// }
 
 	public function index()
 	{
@@ -57,10 +38,11 @@ class StockinsController extends AppController
 			'fields' => ['Supplier.id', 'Supplier.name'],
 
 		]);
-
 		$materials = $this->Material->find('list', [
-			'fields' => ['Material.id', 'Material.name']
+			'fields' => ['Material.id', 'Material.name'],
+			'order' => ['Material.name' => 'ASC']
 		]);
+	
 
 		$conditions = [];
 
@@ -103,19 +85,7 @@ class StockinsController extends AppController
 	 * 
 	 * 
 	 */
-	// public function add() {
-	// 	if ($this->request->is('post')) {
-	// 		$this->Stockin->create();
-	// 		if ($this->Stockin->save($this->request->data)) {
-	// 			$this->Flash->success(__('The stockin has been saved.'));
-	// 			return $this->redirect(array('action' => 'index'));
-	// 		} else {
-	// 			$this->Flash->error(__('The stockin could not be saved. Please, try again.'));
-	// 		}
-	// 	}
-	// 	$materials = $this->Stockin->Material->find('list');
-	// 	$this->set(compact('materials'));
-	// }
+
 
 	/**
 	 * edit method
@@ -173,7 +143,7 @@ class StockinsController extends AppController
 					mkdir($qrDir, 0775, true);
 				}
 
-				$url = 'http://localhost/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
+				$url = 'http://localhost/inventoryprintingfinal/stockouts/viewByMaterial/' . $materialId;
 				$qrFileName = 'material_' . $safeMaterialName . '_' . $stockinId . '.png';
 				$qrPath = $qrDir . $qrFileName;
 
@@ -193,95 +163,6 @@ class StockinsController extends AppController
 	}
 
 
-	// public function add()
-	// {
-	// 	$this->loadModel('Material');
-	// 	$this->loadModel('Stock');
-
-	// 	if ($this->request->is('post')) {
-	// 		$this->Stockin->create();
-
-	// 		if ($this->Stockin->save($this->request->data)) {
-	// 			$stockinId = $this->Stockin->id;
-	// 			$materialId = $this->request->data['Stockin']['material_id'];
-	// 			$addedQty = $this->request->data['Stockin']['quantity'];
-
-	// 			// Update stock table
-	// 			$stock = $this->Stock->find('first', [
-	// 				'conditions' => ['Stock.material_id' => $materialId],
-	// 				'recursive' => -1
-	// 			]);
-
-	// 			if ($stock) {
-	// 				$stock['Stock']['quantity'] += $addedQty;
-	// 				$this->Stock->save($stock);
-	// 			} else {
-	// 				$this->Stock->create();
-	// 				$this->Stock->save([
-	// 					'material_id' => $materialId,
-	// 					'quantity' => $addedQty
-	// 				]);
-	// 			}
-
-	// 			$this->loadModel('Supplier');
-	// 			$suppliers = $this->Supplier->find('list', [
-	// 				'fields' => ['Supplier.id', 'Supplier.supplier_name'],
-	// 				'order' => ['Supplier.supplier_name' => 'ASC']
-	// 			]);
-
-
-	// 			// Get material name for QR generation
-	// 			$material = $this->Material->findById($materialId);
-	// 			$materialName = $material['Material']['name'];
-	// 			$safeMaterialName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $materialName);
-
-	// 			// Generate QR code
-	// 			$url = 'http://192.168.4.197/inventoryprinting/stockouts/viewByMaterial/' . $materialId;
-	// 			$qrDir = WWW_ROOT . 'img' . DS . 'qrcodes' . DS;
-
-	// 			if (!file_exists($qrDir)) {
-	// 				mkdir($qrDir, 0775, true);
-	// 			}
-
-	// 			$qrFileName = 'material_' . $safeMaterialName . '_' . $stockinId . '.png';
-	// 			$qrPath = $qrDir . $qrFileName;
-
-	// 			App::import('Vendor', 'phpqrcode', ['file' => 'phpqrcode' . DS . 'qrlib.php']);
-	// 			QRcode::png($url, $qrPath, 'L', 4, 2);
-
-	// 			$this->Flash->success(__('The stockin has been saved, stock updated, and QR code generated.'));
-	// 			return $this->redirect(['action' => 'index']);
-	// 		} else {
-	// 			$this->Flash->error(__('The stockin could not be saved. Please, try again.'));
-	// 		}
-	// 	}
-
-	// 	$materials = $this->Material->find('list', ['fields' => ['Material.id', 'Material.name']]);
-	// 	$this->set(compact('materials', 'suppliers'));
-
-	// }
-
-
-	// public function edit($id = null)
-	// {
-
-	// 	if (!$this->Stockin->exists($id)) {
-	// 		throw new NotFoundException(__('Invalid stockin'));
-	// 	}
-	// 	if ($this->request->is(array('post', 'put'))) {
-	// 		if ($this->Stockin->save($this->request->data)) {
-	// 			$this->Flash->success(__('The stockin has been saved.'));
-	// 			return $this->redirect(array('action' => 'index'));
-	// 		} else {
-	// 			$this->Flash->error(__('The stockin could not be saved. Please, try again.'));
-	// 		}
-	// 	} else {
-	// 		$options = array('conditions' => array('Stockin.' . $this->Stockin->primaryKey => $id));
-	// 		$this->request->data = $this->Stockin->find('first', $options);
-	// 	}
-	// 	$materials = $this->Stockin->Material->find('list');
-	// 	$this->set(compact('materials'));
-	// }
 
 	public function edit($id = null)
 	{
@@ -321,15 +202,27 @@ class StockinsController extends AppController
 				}
 
 				$this->Flash->success(__('The stockin has been updated.'));
-				return $this->redirect(array('action' => 'index'));
+
+				return $this->redirect(array('action' => 'index', '?' => array('material_id' => $stockin['Stockin']['material_id'])));
+
+
+				
+
 			}
 			$this->Session->Flash->error(__('Unable to update stockin.'));
 		}
+		if (empty($this->request->query('material_id'))) {
+			$this->Session->delete('Stockin.material_id');
+		}
+
 
 		if (!$this->request->data) {
 			$this->request->data = $stockin;
 		}
+
 	}
+
+
 
 
 	/**
@@ -339,19 +232,7 @@ class StockinsController extends AppController
 	 * @param string $id
 	 * @return void
 	 */
-	// public function delete($id = null)
-	// {
-	// 	if (!$this->Stockin->exists($id)) {
-	// 		throw new NotFoundException(__('Invalid stockin'));
-	// 	}
-	// 	$this->request->allowMethod('post', 'delete');
-	// 	if ($this->Stockin->delete($id)) {
-	// 		$this->Flash->success(__('The stockin has been deleted.'));
-	// 	} else {
-	// 		$this->Flash->error(__('The stockin could not be deleted. Please, try again.'));
-	// 	}
-	// 	return $this->redirect(array('action' => 'index'));
-	// }
+	
 
 	public function delete($id = null)
 	{
@@ -381,23 +262,24 @@ class StockinsController extends AppController
 			$this->Flash->error(__('Stockin could not be deleted.'));
 		}
 
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', '?' => array('material_id' => $stockin['Stockin']['material_id'])));
 	}
 
-	public function print_qr($id = null) {
+	public function print_qr($id = null)
+	{
 		$this->layout = 'ajax'; // Use minimal layout
 		$this->Stockin->id = $id;
 		if (!$this->Stockin->exists()) {
 			throw new NotFoundException(__('Invalid stockin'));
 		}
-	
+
 		$stockin = $this->Stockin->find('first', [
 			'conditions' => ['Stockin.id' => $id],
 			'contain' => ['Material']
 		]);
-	
+
 		$this->set(compact('stockin'));
 	}
-	
+
 
 }
